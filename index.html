@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LemonCosmetics | The Glow Revolution</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lemon: {
+                            300: '#ccff33', // Lighter variant for hover
+                            400: '#ADF802', // Your specified color
+                            500: '#8cbf00', // Darker variant
+                            glow: '#ADF802' 
+                        },
+                        dark: {
+                            900: '#0f0f0f',
+                            800: '#1a1a1a',
+                            700: '#262626'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0f0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ADF802;
+        }
+        
+        /* iOS Style Glassmorphism */
+        .glass-card {
+            background: rgba(30, 30, 30, 0.4); /* Semi-transparent dark layer */
+            backdrop-filter: blur(25px) saturate(150%); /* Heavy blur + color boost */
+            -webkit-backdrop-filter: blur(25px) saturate(150%); /* Safari support */
+            border: 1px solid rgba(255, 255, 255, 0.12); /* Subtle crisp border */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* Soft depth shadow */
+        }
+        
+        /* Specific override for lighter glass elements if needed */
+        .glass-light {
+             background: rgba(255, 255, 255, 0.1);
+             backdrop-filter: blur(10px);
+             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 20px rgba(173, 248, 2, 0.5);
+        }
+
+        details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-gray-100 font-sans antialiased overflow-x-hidden">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 glass-card border-b-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <i class="fa-solid fa-lemon text-lemon-400 text-2xl animate-bounce"></i>
+                    <span class="font-serif font-bold text-2xl tracking-wide text-white">Lemon<span class="text-lemon-400">Cosmetics</span></span>
+                </div>
+                
+                <!-- Desktop Links -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#about" class="hover:text-lemon-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">Our Story</a>
+                        <a href="#products" class="hover:text-lemon-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">Shop</a>
+                        <a href="#testimonials" class="hover:text-lemon-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">Reviews</a>
+                        <a href="#faq" class="hover:text-lemon-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">FAQ</a>
+                    </div>
+                </div>
+
+                <!-- Icons & Mobile Menu Button -->
+                <div class="flex gap-4 items-center">
+                    <button class="p-2 hover:text-lemon-400 transition"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <button class="p-2 hover:text-lemon-400 transition relative">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        <span class="absolute top-0 right-0 bg-lemon-400 text-dark-900 text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">2</span>
+                    </button>
+                    <!-- Mobile hamburger -->
+                    <div class="-mr-2 flex md:hidden">
+                        <button type="button" id="mobile-menu-btn" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-white/10 focus:outline-none">
+                            <i class="fa-solid fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu (Hidden by default) -->
+        <div class="hidden md:hidden glass-card absolute w-full left-0 top-20 border-t border-white/10 transition-all duration-300 ease-in-out" id="mobile-menu">
+            <div class="px-4 pt-4 pb-6 space-y-2">
+                <a href="#about" onclick="toggleMobileMenu()" class="text-gray-200 hover:text-lemon-400 hover:bg-white/5 block px-3 py-3 rounded-md text-base font-medium transition">Our Story</a>
+                <a href="#products" onclick="toggleMobileMenu()" class="text-gray-200 hover:text-lemon-400 hover:bg-white/5 block px-3 py-3 rounded-md text-base font-medium transition">Shop</a>
+                <a href="#testimonials" onclick="toggleMobileMenu()" class="text-gray-200 hover:text-lemon-400 hover:bg-white/5 block px-3 py-3 rounded-md text-base font-medium transition">Reviews</a>
+                <a href="#faq" onclick="toggleMobileMenu()" class="text-gray-200 hover:text-lemon-400 hover:bg-white/5 block px-3 py-3 rounded-md text-base font-medium transition">FAQ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <!-- Background Image/Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1556228720-1987df10344e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Cosmetic Texture" class="w-full h-full object-cover opacity-40">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-dark-900/60 to-transparent"></div>
+        </div>
+
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto w-full">
+            <div class="inline-block mb-4 px-4 py-1 rounded-full border border-lemon-400/50 bg-lemon-400/10 backdrop-blur-sm">
+                <span class="text-lemon-400 text-xs md:text-sm font-bold tracking-widest uppercase">New Drop Alert</span>
+            </div>
+            
+            <!-- Responsive Font Sizes -->
+            <h1 class="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight text-white text-glow">
+                Ayurveda meets <br/> <span class="italic text-lemon-400">K-Beauty</span>
+            </h1>
+            
+            <p class="text-base sm:text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto px-4">
+                Ancient roots. Futuristic glow. We blend the purity of Indian herbs with the science of Korean skincare for the ultimate glass-skin finish.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center px-6">
+                <a href="#products" class="bg-lemon-400 text-dark-900 font-bold py-3 md:py-4 px-8 rounded-full hover:bg-lemon-300 transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(173,248,2,0.5)] text-center">
+                    Shop The Glow
+                </a>
+                <a href="#about" class="border border-white text-white font-bold py-3 md:py-4 px-8 rounded-full hover:bg-white hover:text-dark-900 transition-all text-center">
+                    Discover Our Story
+                </a>
+            </div>
+        </div>
+        
+        <!-- Floating Elements Decoration (Hidden on very small screens to save performance) -->
+        <div class="hidden sm:block absolute top-1/4 left-10 w-24 h-24 bg-lemon-400/20 rounded-full blur-3xl animate-float"></div>
+        <div class="hidden sm:block absolute bottom-1/4 right-10 w-32 h-32 bg-lemon-400/20 rounded-full blur-3xl animate-float" style="animation-delay: 1s;"></div>
+    </header>
+
+    <!-- About Company -->
+    <section id="about" class="py-12 md:py-20 bg-dark-900 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+                <div class="relative rounded-2xl overflow-hidden group h-64 md:h-full">
+                    <img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Natural Ingredients" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition"></div>
+                </div>
+                <div>
+                    <h2 class="text-lemon-400 font-bold tracking-widest uppercase text-sm mb-2">The Philosophy</h2>
+                    <h3 class="font-serif text-3xl md:text-5xl font-bold text-white mb-4 md:mb-6">Rooted in India.<br>Perfected in Seoul.</h3>
+                    <p class="text-gray-400 mb-4 md:mb-6 text-base md:text-lg leading-relaxed">
+                        LemonCosmetics isn't just skincare; it's a vibe. We realized that while Gen Z wants that K-Beauty "glass skin," our skin needs the resilience provided by Ayurvedic herbs. 
+                    </p>
+                    <p class="text-gray-400 mb-8 text-base md:text-lg leading-relaxed">
+                        So we mixed Turmeric with Snail Mucin, and Neem with Cica. The result? Skincare that fights pollution, stress, and breakouts while giving you that filter-free radiance.
+                    </p>
+                    
+                    <div class="grid grid-cols-3 gap-2 md:gap-4 border-t border-gray-800 pt-8">
+                        <div class="text-center p-2">
+                            <i class="fa-solid fa-leaf text-xl md:text-2xl text-lemon-400 mb-2"></i>
+                            <p class="text-xs md:text-sm text-gray-300">Vegan Friendly</p>
+                        </div>
+                        <div class="text-center p-2">
+                            <i class="fa-solid fa-flask text-xl md:text-2xl text-lemon-400 mb-2"></i>
+                            <p class="text-xs md:text-sm text-gray-300">pH Balanced</p>
+                        </div>
+                        <div class="text-center p-2">
+                            <i class="fa-solid fa-heart text-xl md:text-2xl text-lemon-400 mb-2"></i>
+                            <p class="text-xs md:text-sm text-gray-300">Cruelty Free</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-16 md:py-24 bg-dark-800 relative overflow-hidden">
+        <!-- Background Blobs -->
+        <div class="absolute top-1/4 left-0 w-96 h-96 bg-lemon-400/10 rounded-full blur-[100px] pointer-events-none animate-float"></div>
+        <div class="absolute bottom-1/4 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none animate-float" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/5 to-transparent pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-10 md:mb-16">
+                <h2 class="font-serif text-3xl md:text-5xl text-white mb-4">The Holy Trinity</h2>
+                <p class="text-gray-400">Everything you need. Nothing you don't.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                
+                <!-- Product 1: Facewash -->
+                <div class="glass-card rounded-2xl p-6 group hover:border-lemon-400/50 transition duration-300 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-lemon-400 text-dark-900 text-xs font-bold px-3 py-1 rounded-bl-lg">BEST SELLER</div>
+                    <div class="h-64 mb-6 overflow-hidden rounded-xl bg-gray-800">
+                        <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Facewash" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-1">Citrus Cica Cleanser</h3>
+                    <p class="text-gray-400 text-sm mb-4">Deep Cleanse + Barrier Repair</p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-check text-lemon-400 mt-1 mr-2 text-xs"></i>
+                            <p class="text-sm text-gray-300"><strong class="text-white">Feature:</strong> pH 5.5 Gel Formula with Jeju Cica & Indian Neem.</p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-bolt text-lemon-400 mt-1 mr-2 text-xs"></i>
+                            <p class="text-sm text-gray-300"><strong class="text-white">Advantage:</strong> Strips dirt, not moisture. Calms active acne instantly.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mt-auto">
+                        <span class="text-2xl font-serif text-white">₹599.00</span>
+                        <button onclick="addToCart('Citrus Cica Cleanser')" class="bg-white text-dark-900 hover:bg-lemon-400 px-4 py-2 rounded-full font-bold text-sm transition-colors active:scale-95">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 2: Serum -->
+                <div class="glass-card rounded-2xl p-6 group hover:border-lemon-400/50 transition duration-300 relative">
+                     <div class="h-64 mb-6 overflow-hidden rounded-xl bg-gray-800">
+                        <img src="https://images.unsplash.com/photo-1629198688000-71f23e745b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Serum" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-1">Golden Hour Serum</h3>
+                    <p class="text-gray-400 text-sm mb-4">Brightening + Glass Skin</p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-check text-lemon-400 mt-1 mr-2 text-xs"></i>
+                            <p class="text-sm text-gray-300"><strong class="text-white">Feature:</strong> 15% Vitamin C blended with Turmeric Extract.</p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-bolt text-lemon-400 mt-1 mr-2 text-xs"></i>
+                            <p class="text-sm text-gray-300"><strong class="text-white">Advantage:</strong> Fades dark spots and hyperpigmentation in 2 weeks.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mt-auto">
+                        <span class="text-2xl font-serif text-white">₹999.00</span>
+                        <button onclick="addToCart('Golden Hour Serum')" class="bg-white text-dark-900 hover:bg-lemon-400 px-4 py-2 rounded-full font-bold text-sm transition-colors active:scale-95">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 3: Sunscreen -->
+                <div class="glass-card rounded-2xl p-6 group hover:border-lemon-400/50 transition duration-300 relative">
+                     <div class="absolute top-0 right-0 bg-lime-400 text-dark-900 text-xs font-bold px-3 py-1 rounded-bl-lg">VIRAL</div>
+                    <div class="h-64 mb-6 overflow-hidden rounded-xl bg-gray-800">
+                        <img src="https://images.unsplash.com/photo-1556228720-1987df10344e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Sunscreen" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-1">Invisible Shield SPF 50</h3>
+                    <p class="text-gray-400 text-sm mb-4">Protection + Hydration</p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-check text-lemon-400 mt-1 mr-2 text-xs"></i>
+                            <p class="text-sm text-gray-300"><strong class="text-white">Feature:</strong> Hybrid filters with Aloe & Hyaluronic Acid.</p>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-bolt text-lemon-400 mt-1 mr-2 text-xs"></i>
+                            <p class="text-sm text-gray-300"><strong class="text-white">Advantage:</strong> Zero white cast. Doubles as a makeup primer.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mt-auto">
+                        <span class="text-2xl font-serif text-white">₹799.00</span>
+                        <button onclick="addToCart('Invisible Shield SPF 50')" class="bg-white text-dark-900 hover:bg-lemon-400 px-4 py-2 rounded-full font-bold text-sm transition-colors active:scale-95">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="py-16 md:py-20 bg-dark-900 relative overflow-hidden">
+        <!-- Decorative bg blur -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+            <div class="absolute top-10 left-10 w-64 h-64 bg-lemon-400/5 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-10 right-10 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="max-w-6xl mx-auto px-4 relative z-10">
+            <h2 class="text-center font-serif text-3xl md:text-4xl text-white mb-8 md:mb-12">The Glow Gang Says</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Review 1 -->
+                <div class="glass-card p-6 md:p-8 rounded-xl border-t-4 border-lemon-400">
+                    <div class="flex text-lemon-400 mb-4 text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 italic mb-6">"Finally a sunscreen that doesn't make me look purple! The Invisible Shield is literally magic. It feels like water on my skin."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-700 overflow-hidden">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold text-sm">Sarah K.</h4>
+                            <p class="text-gray-500 text-xs">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="glass-card p-6 md:p-8 rounded-xl border-t-4 border-lemon-400">
+                    <div class="flex text-lemon-400 mb-4 text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 italic mb-6">"The serum cleared up my acne scars in like 3 weeks. I love the smell, it's so fresh but not overpowering. Total holy grail."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-700 overflow-hidden">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold text-sm">James L.</h4>
+                            <p class="text-gray-500 text-xs">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="glass-card p-6 md:p-8 rounded-xl border-t-4 border-lemon-400">
+                    <div class="flex text-lemon-400 mb-4 text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                    </div>
+                    <p class="text-gray-300 italic mb-6">"My skin barrier was wrecked from experimenting. The Cica Cleanser saved me. It's so gentle but actually cleans."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-700 overflow-hidden">
+                            <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="User" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold text-sm">Priya M.</h4>
+                            <p class="text-gray-500 text-xs">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-16 md:py-20 bg-dark-800">
+        <div class="max-w-3xl mx-auto px-4">
+            <h2 class="text-center font-serif text-3xl text-white mb-2">Got Questions?</h2>
+            <p class="text-center text-gray-400 mb-10">We've got answers.</p>
+
+            <div class="space-y-4">
+                <!-- Q1 -->
+                <details class="glass-card rounded-lg group open:bg-white/5 transition-all">
+                    <summary class="flex justify-between items-center cursor-pointer p-6 font-medium text-white">
+                        Is LemonCosmetics suitable for sensitive skin?
+                        <span class="transition group-open:rotate-180">
+                            <i class="fa-solid fa-chevron-down text-lemon-400"></i>
+                        </span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-300 leading-relaxed">
+                        Absolutely! Our products are formulated with Cica (Centella Asiatica) and Aloe specifically to soothe sensitive skin. We are 100% alcohol-free and paraben-free.
+                    </div>
+                </details>
+
+                <!-- Q2 -->
+                <details class="glass-card rounded-lg group open:bg-white/5 transition-all">
+                    <summary class="flex justify-between items-center cursor-pointer p-6 font-medium text-white">
+                        Do you ship internationally?
+                        <span class="transition group-open:rotate-180">
+                            <i class="fa-solid fa-chevron-down text-lemon-400"></i>
+                        </span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-300 leading-relaxed">
+                        Yes, we ship worldwide! Shipping is free on orders over ₹999. Standard shipping takes 5-10 business days depending on your location.
+                    </div>
+                </details>
+
+                <!-- Q3 -->
+                <details class="glass-card rounded-lg group open:bg-white/5 transition-all">
+                    <summary class="flex justify-between items-center cursor-pointer p-6 font-medium text-white">
+                        Are your products vegan?
+                        <span class="transition group-open:rotate-180">
+                            <i class="fa-solid fa-chevron-down text-lemon-400"></i>
+                        </span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-300 leading-relaxed">
+                        Yes, we are 100% Vegan and PETA certified Cruelty-Free. Even our "Snail Mucin" alternative is a plant-based phytomucin extracted from wild yam!
+                    </div>
+                </details>
+                
+                 <!-- Q4 -->
+                <details class="glass-card rounded-lg group open:bg-white/5 transition-all">
+                    <summary class="flex justify-between items-center cursor-pointer p-6 font-medium text-white">
+                        In what order should I use the products?
+                        <span class="transition group-open:rotate-180">
+                            <i class="fa-solid fa-chevron-down text-lemon-400"></i>
+                        </span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-300 leading-relaxed">
+                        Easy! 1. Cleanse with the Citrus Cica Cleanser. 2. Apply the Golden Hour Serum on damp skin. 3. Finish with the Invisible Shield SPF (in the morning).
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white pt-12 md:pt-16 pb-8 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-12">
+                <div class="col-span-1 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-lemon text-lemon-400 text-xl"></i>
+                        <span class="font-serif font-bold text-xl">Lemon<span class="text-lemon-400">Cosmetics</span></span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-4">Redefining skincare for the next generation. Ayurveda wisdom met K-Beauty science, and the rest is history.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-800 flex items-center justify-center hover:bg-lemon-400 hover:text-black transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-800 flex items-center justify-center hover:bg-lemon-400 hover:text-black transition"><i class="fa-brands fa-tiktok"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-800 flex items-center justify-center hover:bg-lemon-400 hover:text-black transition"><i class="fa-brands fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold mb-4 text-lemon-400">Shop</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">All Products</a></li>
+                        <li><a href="#" class="hover:text-white transition">Bundles</a></li>
+                        <li><a href="#" class="hover:text-white transition">New Arrivals</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold mb-4 text-lemon-400">Company</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Our Story</a></li>
+                        <li><a href="#" class="hover:text-white transition">Ingredients</a></li>
+                        <li><a href="#" class="hover:text-white transition">Sustainability</a></li>
+                        <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-span-1 sm:col-span-2 md:col-span-1">
+                    <h3 class="font-bold mb-4 text-lemon-400">Join the Club</h3>
+                    <p class="text-xs text-gray-400 mb-4">Get 10% off your first order and exclusive access to new drops.</p>
+                    <form onsubmit="event.preventDefault(); alert('Thanks for subscribing!');" class="flex">
+                        <input type="email" placeholder="Your email" class="bg-dark-800 text-white px-4 py-2 rounded-l-md focus:outline-none focus:ring-1 focus:ring-lemon-400 w-full border border-gray-700">
+                        <button type="submit" class="bg-lemon-400 text-black px-4 py-2 rounded-r-md font-bold hover:bg-lemon-300 transition">GO</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
+                <p>&copy; 2024 LemonCosmetics Inc. All rights reserved.</p>
+                <div class="space-x-4">
+                    <a href="#" class="hover:text-white">Privacy Policy</a>
+                    <a href="#" class="hover:text-white">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Toast (Hidden by default) -->
+    <div id="toast" class="fixed bottom-5 right-5 left-5 md:left-auto bg-lemon-400 text-black px-6 py-3 rounded-lg shadow-2xl transform translate-y-32 opacity-0 transition-all duration-300 z-50 font-bold flex items-center justify-center md:justify-start gap-3">
+        <i class="fa-solid fa-check-circle"></i>
+        <span id="toast-message">Added to cart!</span>
+    </div>
+
+    <script>
+        // Toggle mobile menu
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+           toggleMobileMenu();
+        });
+
+        function toggleMobileMenu() {
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        }
+
+        // Simple Add to Cart Interaction
+        function addToCart(productName) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            
+            toastMsg.innerText = `Added ${productName} to cart!`;
+            
+            // Show toast
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
